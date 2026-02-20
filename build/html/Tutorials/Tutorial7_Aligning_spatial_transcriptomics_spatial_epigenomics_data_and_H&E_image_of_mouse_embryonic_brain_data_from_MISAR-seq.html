@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial 7: Aligning spatial transcriptomics, spatial epigenomics data and H&amp;E image of mouse embryonic brain data from MISAR-seq &mdash; SpaMOMA  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Tutorial 6: Aligning spatial transcriptomics data to H&amp;E image of human breast cancer data from Xenium" href="Tutorial6_Aligning_spatial_transcriptomics_data_to_H%26E_image_of_human_breast_cancer_data_from_Xenium.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpaMOMA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial1_Aligning_eight_spatial_transcriptomics_slices_of_mouse_hippocampus.html">Tutorial 1: Aligning eight spatial transcriptomics slices of mouse hippocampus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial2_Aligning_spatial_transcriptomics_slices_of_mouse_olfactory_bulb.html">Tutorial 2: Aligning spatial transcriptomics slices of mouse olfactory bulb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial3_Aligning_spatial_transcriptomics_data_and_spatial_epigenomics_data_of_mouse_coronal_brain_slices.html">Tutorial 3: Aligning spatial transcriptomics data and spatial epigenomics data of mouse coronal brain slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices.html">Tutorial 4: Aligning spatial transcriptomics data and spatial proteomics data of mouse thymus slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial5_Aligning_spatial_transcriptomics_data_to_spatial_metabolomics_data_of_mouse_brain_slices.html">Tutorial 5: Aligning spatial transcriptomics data to spatial metabolomics data of mouse brain slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial6_Aligning_spatial_transcriptomics_data_to_H%26E_image_of_human_breast_cancer_data_from_Xenium.html">Tutorial 6: Aligning spatial transcriptomics data to H&amp;E image of human breast cancer data from Xenium</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial 7: Aligning spatial transcriptomics, spatial epigenomics data and H&amp;E image of mouse embryonic brain data from MISAR-seq</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Data-Preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import-packages">import packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Specify-Slice-Metadata">Specify Slice Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Data-Preprocessing">Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Generate-Spatial-Pattern-Images">Generate Spatial Pattern Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Model-Training">Model Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Slice-Alignment">Slice Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Visualize-Alignment-Results">Visualize Alignment Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Enhancing-low-resolution-spots-to-pixel-level-resolution-based-on-aligned-coordinates">Enhancing low resolution spots to pixel-level resolution based on aligned coordinates</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpaMOMA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial 7: Aligning spatial transcriptomics, spatial epigenomics data and H&amp;E image of mouse embryonic brain data from MISAR-seq</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Tutorials/Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H&amp;E_image_of_mouse_embryonic_brain_data_from_MISAR-seq.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Tutorial-7:-Aligning-spatial-transcriptomics,-spatial-epigenomics-data-and-H&amp;E-image-of-mouse-embryonic-brain-data-from-MISAR-seq">
+<h1>Tutorial 7: Aligning spatial transcriptomics, spatial epigenomics data and H&amp;E image of mouse embryonic brain data from MISAR-seq<a class="headerlink" href="#Tutorial-7:-Aligning-spatial-transcriptomics,-spatial-epigenomics-data-and-H&E-image-of-mouse-embryonic-brain-data-from-MISAR-seq" title="Link to this heading"></a></h1>
+<section id="Data-Preparation">
+<h2>Data Preparation<a class="headerlink" href="#Data-Preparation" title="Link to this heading"></a></h2>
+<p>Please download the required data files from the provided link: <a class="reference external" href="https://pan.baidu.com/s/17K1cmxOPmhSvV6dG6gnafw?pwd=sjbx">Download here</a></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">E11_0-S1-HE.jpg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">E11.0-S1-RNA.h5ad</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">E11.0-S2-genescore.h5ad</span></code></p></li>
+</ul>
+<p>After downloading, place both files into the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> folder located in the same directory as this notebook.</p>
+<p>The folder structure should be organized as follows:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project_root/
+│
+├── datasets/
+│   └── MISAR2/
+│       ├── E11_0-S1-HE.jpg
+│       ├── E11.0-S1-RNA.h5ad
+│       └── E11.0-S2-genescore.h5ad
+│
+├── Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H&amp;E_image_of_mouse_embryonic_brain_data_from_MISAR-seq.ipynb
+│
+└── SpaMOMA/
+</pre></div>
+</div>
+</section>
+<section id="import-packages">
+<h2>import packages<a class="headerlink" href="#import-packages" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import scanpy as sc
+from SpaMOMA.SpaMOMA import SpaMOMA
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Specify-Slice-Metadata">
+<h2>Specify Slice Metadata<a class="headerlink" href="#Specify-Slice-Metadata" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>save_directory = &quot;./SpaMOMA_output/MISAR2/&quot;
+spamoma = SpaMOMA(save_dir=save_directory)
+spamoma.add_slice(
+    sample_id=&quot;S1-HE&quot;,
+    raw_data_path=&quot;./datasets/MISAR2/E11_0-S1-HE.jpg&quot;,
+    feature=&quot;img&quot;
+)
+spamoma.add_slice(
+    sample_id=&quot;S1-RNA&quot;,
+    raw_data_path=&quot;./datasets/MISAR2/E11.0-S1-RNA.h5ad&quot;,
+    feature=&quot;rna&quot;
+)
+spamoma.add_slice(
+    sample_id=&quot;S2-ATAC&quot;,
+    raw_data_path=&quot;./datasets/MISAR2/E11.0-S2-genescore.h5ad&quot;,
+    feature=&quot;gene_activity_score&quot;
+)
+spamoma.set_reference(&#39;S1-HE&#39;)
+print(f&quot;aligning {[sid for sid in spamoma.input_slice_dict.keys() if sid != spamoma.reference_sample_id]} to {spamoma.reference_sample_id}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+aligning [&#39;S1-RNA&#39;, &#39;S2-ATAC&#39;] to S1-HE
+</pre></div></div>
+</div>
+</section>
+<section id="Data-Preprocessing">
+<h2>Data Preprocessing<a class="headerlink" href="#Data-Preprocessing" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.preprocess_input_slices({
+    &#39;S1-HE&#39;:{
+        &#39;downsample&#39;:True
+    }
+})
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_7_0.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_7_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+preprocessing rna features...
+------Calculating spatial graph...
+The graph contains 8841 edges, 1263 cells.
+7.0000 neighbors per cell on average.
+Size of Input:  (1263, 3000)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2026-02-19 14:28:18.909990: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2211] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2026-02-19 14:28:18.922390: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:382] MLIR V1 optimization pass is not enabled
+
+100%|██████████| 500/500 [00:51&lt;00:00,  9.62it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+preprocessing gene_activity_score features...
+------Calculating spatial graph...
+The graph contains 9471 edges, 1353 cells.
+7.0000 neighbors per cell on average.
+Size of Input:  (1353, 3000)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2026-02-19 14:29:17.983758: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2211] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+
+100%|██████████| 500/500 [00:27&lt;00:00, 18.42it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_7_5.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_7_5.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_7_6.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_7_6.png" />
+</div>
+</div>
+</section>
+<section id="Generate-Spatial-Pattern-Images">
+<h2>Generate Spatial Pattern Images<a class="headerlink" href="#Generate-Spatial-Pattern-Images" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.generate_imgs({
+    &#39;S1-RNA&#39;:{
+        &#39;max_distance_ratio&#39;:0.9
+    },
+    &#39;S2-ATAC&#39;:{
+        &#39;max_distance_ratio&#39;:1.2
+    }
+})
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Color-quantized image saved to: ./SpaMOMA_output/MISAR2//S1-HE/RGB.png
+generating spatial pattern image... gaussian_sigma:1.0, interpolation_method:linear, max_distance_ratio&#34;0.9
+saving image...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_9_1.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_9_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Img for S1-RNA is saved to ./SpaMOMA_output/MISAR2/S1-RNA/RGB.png
+generating spatial pattern image... gaussian_sigma:1.0, interpolation_method:linear, max_distance_ratio&#34;1.2
+saving image...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_9_3.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_9_3.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Img for S2-ATAC is saved to ./SpaMOMA_output/MISAR2/S2-ATAC/RGB.png
+</pre></div></div>
+</div>
+</section>
+<section id="Model-Training">
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.train(parallel_mode=True,coarse_gpu=3,fine_gpu=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+start coarse adaptation...
+start fine adaptation...
+fine adaptation done!
+coarse adaptation done!
+</pre></div></div>
+</div>
+</section>
+<section id="Slice-Alignment">
+<h2>Slice Alignment<a class="headerlink" href="#Slice-Alignment" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.align_slices()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+S1-HE image saved to: ./SpaMOMA_output/MISAR2//alignment_output/S1-HE.png
+****************** aligning S1-RNA to S1-HE ..... ******************
+start coarse alignment...
+match params: {&#39;model_key&#39;: &#39;roma&#39;, &#39;match_threshold&#39;: 0.999, &#39;extract_max_keypoints&#39;: 4096, &#39;force_resize&#39;: True, &#39;image_height&#39;: 560, &#39;image_width&#39;: 560, &#39;choice_geometry_type&#39;: &#39;Homography&#39;}
+Loading Roma model: ./SpaMOMA_output/MISAR2//coarse_model/adapted_model_epoch_1000.pth
+current Roma instance ID: 128605150954832
+preprocessing is already resized
+Force resize to 560x560
+coarse alignment done!
+start fine alignment...
+Loading Roma model: ./SpaMOMA_output/MISAR2//fine_model/adapted_model_epoch_300.pth
+current Roma instance ID: 128601452554752
+preprocessing is already resized
+Force resize to 560x560
+aligned S1-RNA adata is saved to: ./SpaMOMA_output/MISAR2//alignment_output/S1-RNA.h5ad
+fine alignment done!
+****************** aligning S2-ATAC to S1-HE ..... ******************
+start coarse alignment...
+match params: {&#39;model_key&#39;: &#39;roma&#39;, &#39;match_threshold&#39;: 0.999, &#39;extract_max_keypoints&#39;: 4096, &#39;force_resize&#39;: True, &#39;image_height&#39;: 560, &#39;image_width&#39;: 560, &#39;choice_geometry_type&#39;: &#39;Homography&#39;}
+Loading Roma model: ./SpaMOMA_output/MISAR2//coarse_model/adapted_model_epoch_1000.pth
+current Roma instance ID: 128602797373376
+preprocessing is already resized
+Force resize to 560x560
+coarse alignment done!
+start fine alignment...
+Loading Roma model: ./SpaMOMA_output/MISAR2//fine_model/adapted_model_epoch_300.pth
+current Roma instance ID: 128600096111632
+preprocessing is already resized
+Force resize to 560x560
+aligned S2-ATAC adata is saved to: ./SpaMOMA_output/MISAR2//alignment_output/S2-ATAC.h5ad
+fine alignment done!
+</pre></div></div>
+</div>
+</section>
+<section id="Visualize-Alignment-Results">
+<h2>Visualize Alignment Results<a class="headerlink" href="#Visualize-Alignment-Results" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.visualize_aligned_slices(point_size=3,figsize=(5, 4))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Overlaying aligned slice for sample: S1-RNA
+Overlaying aligned slice for sample: S2-ATAC
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_15_1.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_15_1.png" />
+</div>
+</div>
+</section>
+<section id="Enhancing-low-resolution-spots-to-pixel-level-resolution-based-on-aligned-coordinates">
+<h2>Enhancing low resolution spots to pixel-level resolution based on aligned coordinates<a class="headerlink" href="#Enhancing-low-resolution-spots-to-pixel-level-resolution-based-on-aligned-coordinates" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>low_res_adata=spamoma.read_aligned_data(&#39;S1-RNA&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sc.pl.embedding(low_res_adata,color=&#39;Pou3f3&#39;,basis=&#39;aligned_spatial&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_18_0.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_18_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>enhanced_adata=spamoma.SpaMOMA_enhance_resolution(adata=low_res_adata,img_path=&#39;./SpaMOMA_output/MISAR2/S1-HE/RGB.png&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Calculating MAGIC...
+  Running MAGIC on 1263 cells and 31433 genes.
+  Calculating graph and diffusion operator...
+    Calculating PCA...
+    Calculated PCA in 12.75 seconds.
+    Calculating KNN search...
+    Calculated KNN search in 0.20 seconds.
+    Calculating affinities...
+    Calculated affinities in 0.20 seconds.
+  Calculated graph and diffusion operator in 13.16 seconds.
+  Running MAGIC with `solver=&#39;exact&#39;` on 31433-dimensional data may take a long time. Consider denoising specific genes with `genes=&lt;list-like&gt;` or using `solver=&#39;approximate&#39;`.
+  Calculating imputation...
+  Calculated imputation in 0.17 seconds.
+Calculated MAGIC in 13.37 seconds.
+Number of valid sudo spots in tissue region: 11370
+Number of valid known spots in tissue region: 1111
+Total number of sudo points:  11370
+Calculating spot 0
+Calculating spot 1000
+Calculating spot 2000
+Calculating spot 3000
+Calculating spot 4000
+Calculating spot 5000
+Calculating spot 6000
+Calculating spot 7000
+Calculating spot 8000
+Calculating spot 9000
+Calculating spot 10000
+Calculating spot 11000
+Imputing spot 0
+Imputing spot 1000
+Imputing spot 2000
+Imputing spot 3000
+Imputing spot 4000
+Imputing spot 5000
+Imputing spot 6000
+Imputing spot 7000
+Imputing spot 8000
+Imputing spot 9000
+Imputing spot 10000
+Imputing spot 11000
+Final enhanced data dimensions: (11370, 31433)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sc.pl.embedding(enhanced_adata,color=&#39;Pou3f3&#39;,s=15,basis=&#39;spatial&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_20_0.png" src="../_images/Tutorials_Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq_20_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Tutorial6_Aligning_spatial_transcriptomics_data_to_H%26E_image_of_human_breast_cancer_data_from_Xenium.html" class="btn btn-neutral float-left" title="Tutorial 6: Aligning spatial transcriptomics data to H&amp;E image of human breast cancer data from Xenium" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, ZhangJianxing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

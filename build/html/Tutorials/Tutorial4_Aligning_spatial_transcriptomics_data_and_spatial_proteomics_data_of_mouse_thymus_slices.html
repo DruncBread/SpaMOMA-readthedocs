@@ -1,0 +1,839 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial 4: Aligning spatial transcriptomics data and spatial proteomics data of mouse thymus slices &mdash; SpaMOMA  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial 5: Aligning spatial transcriptomics data to spatial metabolomics data of mouse brain slices" href="Tutorial5_Aligning_spatial_transcriptomics_data_to_spatial_metabolomics_data_of_mouse_brain_slices.html" />
+    <link rel="prev" title="Tutorial 3: Aligning spatial transcriptomics data and spatial epigenomics data of mouse coronal brain slices" href="Tutorial3_Aligning_spatial_transcriptomics_data_and_spatial_epigenomics_data_of_mouse_coronal_brain_slices.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpaMOMA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial1_Aligning_eight_spatial_transcriptomics_slices_of_mouse_hippocampus.html">Tutorial 1: Aligning eight spatial transcriptomics slices of mouse hippocampus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial2_Aligning_spatial_transcriptomics_slices_of_mouse_olfactory_bulb.html">Tutorial 2: Aligning spatial transcriptomics slices of mouse olfactory bulb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial3_Aligning_spatial_transcriptomics_data_and_spatial_epigenomics_data_of_mouse_coronal_brain_slices.html">Tutorial 3: Aligning spatial transcriptomics data and spatial epigenomics data of mouse coronal brain slices</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial 4: Aligning spatial transcriptomics data and spatial proteomics data of mouse thymus slices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Data-Preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import-packages">import packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Specify-Slice-Metadata">Specify Slice Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Data-Preprocessing">Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Generate-Spatial-Pattern-Images">Generate Spatial Pattern Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Model-Training">Model Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Slice-Alignment">Slice Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Visualize-Alignment-Results">Visualize Alignment Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Omics-to-omics-translation">Omics-to-omics translation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transfer-omics-from-adata2-to-adata1,-and-transfer-omics-from-adata1-to-adata2">transfer omics from adata2 to adata1, and transfer omics from adata1 to adata2</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Identify-spatial-domains-for-each-translated-slice">Identify spatial domains for each translated slice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Jointly-identify-spatial-domains-across-the-two-translated-slices">Jointly identify spatial domains across the two translated slices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial5_Aligning_spatial_transcriptomics_data_to_spatial_metabolomics_data_of_mouse_brain_slices.html">Tutorial 5: Aligning spatial transcriptomics data to spatial metabolomics data of mouse brain slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial6_Aligning_spatial_transcriptomics_data_to_H%26E_image_of_human_breast_cancer_data_from_Xenium.html">Tutorial 6: Aligning spatial transcriptomics data to H&amp;E image of human breast cancer data from Xenium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq.html">Tutorial 7: Aligning spatial transcriptomics, spatial epigenomics data and H&amp;E image of mouse embryonic brain data from MISAR-seq</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpaMOMA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial 4: Aligning spatial transcriptomics data and spatial proteomics data of mouse thymus slices</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Tutorials/Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Tutorial-4:-Aligning-spatial-transcriptomics-data-and-spatial-proteomics-data-of-mouse-thymus-slices">
+<h1>Tutorial 4: Aligning spatial transcriptomics data and spatial proteomics data of mouse thymus slices<a class="headerlink" href="#Tutorial-4:-Aligning-spatial-transcriptomics-data-and-spatial-proteomics-data-of-mouse-thymus-slices" title="Link to this heading"></a></h1>
+<section id="Data-Preparation">
+<h2>Data Preparation<a class="headerlink" href="#Data-Preparation" title="Link to this heading"></a></h2>
+<p>Please download the required data files from the provided link: <a class="reference external" href="https://pan.baidu.com/s/17K1cmxOPmhSvV6dG6gnafw?pwd=sjbx">Download here</a></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">2_RNA.h5ad</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">4_ADT.h5ad</span></code></p></li>
+</ul>
+<p>After downloading, place both files into the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> folder located in the same directory as this notebook.</p>
+<p>The folder structure should be organized as follows:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project_root/
+│
+├── datasets/
+│   └── MT/
+│       ├── 2_RNA.h5ad
+│       └── 4_ADT.h5ad
+│
+├── Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices.ipynb
+│
+└── SpaMOMA/
+</pre></div>
+</div>
+</section>
+<section id="import-packages">
+<h2>import packages<a class="headerlink" href="#import-packages" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+import scanpy as sc
+from SpaMOMA.SpaMOMA import SpaMOMA
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Specify-Slice-Metadata">
+<h2>Specify Slice Metadata<a class="headerlink" href="#Specify-Slice-Metadata" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>save_directory = &quot;./SpaMOMA_output/MT/&quot;
+spamoma = SpaMOMA(save_dir=save_directory)
+spamoma.add_slice(
+    sample_id=&quot;2_RNA&quot;,
+    raw_data_path=&quot;./datasets/MT/2_RNA.h5ad&quot;,
+    feature=&quot;rna&quot;
+)
+spamoma.add_slice(
+    sample_id=&quot;4_ADT&quot;,
+    raw_data_path=&quot;./datasets/MT/4_ADT.h5ad&quot;,
+    feature=&quot;protein&quot;
+)
+spamoma.set_reference(&#39;2_RNA&#39;)
+print(f&quot;aligning {[sid for sid in spamoma.input_slice_dict.keys() if sid != spamoma.reference_sample_id]} to {spamoma.reference_sample_id}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+aligning [&#39;4_ADT&#39;] to 2_RNA
+</pre></div></div>
+</div>
+</section>
+<section id="Data-Preprocessing">
+<h2>Data Preprocessing<a class="headerlink" href="#Data-Preprocessing" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.preprocess_input_slices()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+preprocessing rna features...
+------Calculating spatial graph...
+The graph contains 29771 edges, 4253 cells.
+7.0000 neighbors per cell on average.
+Size of Input:  (4253, 3000)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2026-02-19 14:16:04.044179: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2211] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2026-02-19 14:16:04.052848: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:382] MLIR V1 optimization pass is not enabled
+
+100%|██████████| 500/500 [01:23&lt;00:00,  5.97it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+preprocessing protein features...
+------Calculating spatial graph...
+The graph contains 29596 edges, 4228 cells.
+7.0000 neighbors per cell on average.
+Size of Input:  (4228, 19)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2026-02-19 14:17:29.771302: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2211] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+
+100%|██████████| 500/500 [00:36&lt;00:00, 13.60it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_7_4.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_7_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_7_5.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_7_5.png" />
+</div>
+</div>
+</section>
+<section id="Generate-Spatial-Pattern-Images">
+<h2>Generate Spatial Pattern Images<a class="headerlink" href="#Generate-Spatial-Pattern-Images" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.generate_imgs()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+generating spatial pattern image... gaussian_sigma:1.0, interpolation_method:linear, max_distance_ratio&#34;1.2
+saving image...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_9_1.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_9_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Img for 2_RNA is saved to ./SpaMOMA_output/MT/2_RNA/RGB.png
+generating spatial pattern image... gaussian_sigma:1.0, interpolation_method:linear, max_distance_ratio&#34;1.2
+saving image...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_9_3.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_9_3.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Img for 4_ADT is saved to ./SpaMOMA_output/MT/4_ADT/RGB.png
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.input_slice_dict
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;2_RNA&#39;: {&#39;sample_id&#39;: &#39;2_RNA&#39;,
+  &#39;raw_data_path&#39;: &#39;./datasets/MT/2_RNA.h5ad&#39;,
+  &#39;feature&#39;: &#39;rna&#39;,
+  &#39;pseudo_color_key&#39;: &#39;pca&#39;,
+  &#39;processed_data&#39;: AnnData object with n_obs × n_vars = 4253 × 3000
+      obs: &#39;orig.ident&#39;, &#39;x&#39;, &#39;y&#39;, &#39;spot_x&#39;, &#39;spot_y&#39;, &#39;img_x&#39;, &#39;img_y&#39;, &#39;batch&#39;, &#39;my_pixel_x&#39;, &#39;my_pixel_y&#39;
+      var: &#39;var_type&#39;, &#39;highly_variable&#39;, &#39;highly_variable_rank&#39;, &#39;means&#39;, &#39;variances&#39;, &#39;variances_norm&#39;
+      uns: &#39;hvg&#39;, &#39;log1p&#39;, &#39;spatial_neighbors&#39;, &#39;moranI&#39;
+      obsm: &#39;spatial&#39;, &#39;pca&#39;
+      obsp: &#39;spatial_connectivities&#39;, &#39;spatial_distances&#39;,
+  &#39;SPI_path&#39;: &#39;./SpaMOMA_output/MT/2_RNA/RGB.png&#39;},
+ &#39;4_ADT&#39;: {&#39;sample_id&#39;: &#39;4_ADT&#39;,
+  &#39;raw_data_path&#39;: &#39;./datasets/MT/4_ADT.h5ad&#39;,
+  &#39;feature&#39;: &#39;protein&#39;,
+  &#39;pseudo_color_key&#39;: &#39;pca&#39;,
+  &#39;processed_data&#39;: AnnData object with n_obs × n_vars = 4228 × 19
+      obs: &#39;orig.ident&#39;, &#39;x&#39;, &#39;y&#39;, &#39;spot_x&#39;, &#39;spot_y&#39;, &#39;img_x&#39;, &#39;img_y&#39;, &#39;batch&#39;, &#39;my_pixel_x&#39;, &#39;my_pixel_y&#39;
+      var: &#39;protein_name&#39;, &#39;var_type&#39;
+      obsm: &#39;spatial&#39;, &#39;pca&#39;,
+  &#39;SPI_path&#39;: &#39;./SpaMOMA_output/MT/4_ADT/RGB.png&#39;}}
+</pre></div></div>
+</div>
+</section>
+<section id="Model-Training">
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.train(coarse_epochs=1000,fine_epochs=300,parallel_mode=True,coarse_gpu=1,fine_gpu=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+start coarse adaptation...
+start fine adaptation...
+fine adaptation done!
+coarse adaptation done!
+</pre></div></div>
+</div>
+</section>
+<section id="Slice-Alignment">
+<h2>Slice Alignment<a class="headerlink" href="#Slice-Alignment" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.align_slices()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+aligned 2_RNA adata is saved to: ./SpaMOMA_output/MT//alignment_output/2_RNA.h5ad
+****************** aligning 4_ADT to 2_RNA ..... ******************
+start coarse alignment...
+match params: {&#39;model_key&#39;: &#39;roma&#39;, &#39;match_threshold&#39;: 0.999, &#39;extract_max_keypoints&#39;: 4096, &#39;force_resize&#39;: True, &#39;image_height&#39;: 560, &#39;image_width&#39;: 560, &#39;choice_geometry_type&#39;: &#39;Homography&#39;}
+Loading Roma model: ./SpaMOMA_output/MT//coarse_model/adapted_model_epoch_1000.pth
+current Roma instance ID: 128099959915808
+preprocessing is already resized
+Force resize to 560x560
+coarse alignment done!
+start fine alignment...
+Loading Roma model: ./SpaMOMA_output/MT//fine_model/adapted_model_epoch_300.pth
+current Roma instance ID: 128100920472864
+preprocessing is already resized
+Force resize to 560x560
+aligned 4_ADT adata is saved to: ./SpaMOMA_output/MT//alignment_output/4_ADT.h5ad
+fine alignment done!
+</pre></div></div>
+</div>
+</section>
+<section id="Visualize-Alignment-Results">
+<h2>Visualize Alignment Results<a class="headerlink" href="#Visualize-Alignment-Results" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spamoma.visualize_aligned_slices(point_size=3,figsize=(5, 4))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Overlaying aligned slice for sample: 4_ADT
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_16_1.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_16_1.png" />
+</div>
+</div>
+</section>
+<section id="Omics-to-omics-translation">
+<h2>Omics-to-omics translation<a class="headerlink" href="#Omics-to-omics-translation" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata1=spamoma.read_aligned_data(&#39;2_RNA&#39;)
+adata2=spamoma.read_aligned_data(&#39;4_ADT&#39;)
+</pre></div>
+</div>
+</div>
+<section id="transfer-omics-from-adata2-to-adata1,-and-transfer-omics-from-adata1-to-adata2">
+<h3>transfer omics from adata2 to adata1, and transfer omics from adata1 to adata2<a class="headerlink" href="#transfer-omics-from-adata2-to-adata1,-and-transfer-omics-from-adata1-to-adata2" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata1_complemented=spamoma.SpaMOMA_translate(adata1,adata2,k_neighbors=4,overlap_distance_threshold=90,save_path=&#39;./SpaMOMA_output/MT/translation_output/2_RNA_complemented.h5ad&#39;)
+adata2_complemented=spamoma.SpaMOMA_translate(adata2,adata1,k_neighbors=4,overlap_distance_threshold=90,save_path=&#39;./SpaMOMA_output/MT/translation_output/4_ADT_complemented.h5ad&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Translating omics-data from adata_src to adata_target...
+Translating omics-data from adata_src to adata_target...
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Identify-spatial-domains-for-each-translated-slice">
+<h2>Identify spatial domains for each translated slice<a class="headerlink" href="#Identify-spatial-domains-for-each-translated-slice" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata=spamoma.SpaMOMA_clustering(adata1,&#39;rna&#39;,adata1_complemented,&#39;protein&#39;,data_type=&#39;SPOTS&#39;,n_domains=6,
+                                 method_list=[&#39;PRESENT&#39;,&#39;MISO&#39;,&#39;SpatialGlue&#39;],cluster_types=[&#39;mclust&#39;],add_key=&#39;consensus&#39;)
+sc.pl.spatial(adata,color=&#39;consensus&#39;,basis=&#39;aligned_spatial&#39;,spot_size=25)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+************ running SpatialGlue ***************
+processing rna
+WARNING: adata.X seems to be already log-transformed.
+processing protein
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+100%|██████████| 600/600 [00:59&lt;00:00, 10.07it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Model training finished!
+
+************ running MISO ***************
+CUDA is available. GPU: NVIDIA A100 80GB PCIe
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "448f154d9c134048b4d163ddb08a0c82", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f3990136c7524ef480fe6fc11928437f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+************ running PRESENT ***************
+Loading data and parameters...
+Input data has been loaded
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Computing METIS partitioning...
+Done!
+
+Model training:  40%|████      | 40/100 [01:28&lt;02:12,  2.20s/it, NLL_loss=0.0912, BNN_loss=0.447, MSE_loss=0.185, IOA_loss=0.0687, ES counter=20, ES patience=20]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Early stop the training process
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+R[write to console]:                    __           __
+   ____ ___  _____/ /_  _______/ /_
+  / __ `__ \/ ___/ / / / / ___/ __/
+ / / / / / / /__/ / /_/ (__  ) /_
+/_/ /_/ /_/\___/_/\__,_/____/\__/   version 6.1.1
+Type &#39;citation(&#34;mclust&#34;)&#39; for citing this R package in publications.
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fitting ...
+
+  |======================================================================| 100%
+fitting ...
+
+  |======================================================================| 100%
+fitting ...
+
+  |======================================================================| 100%
+got consensus_matrix
+got consensus_labels
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_22_10.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_22_10.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cluster_save_dir=f&quot;{save_directory}/cluster_result_single_slice/&quot;
+if not os.path.exists(cluster_save_dir):
+    os.makedirs(cluster_save_dir,exist_ok=True)
+adata.write(f&#39;{cluster_save_dir}/2_RNA.h5ad&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata=spamoma.SpaMOMA_clustering(adata2,&#39;protein&#39;,adata2_complemented,&#39;rna&#39;,data_type=&#39;SPOTS&#39;,n_domains=6,
+                                 method_list=[&#39;PRESENT&#39;,&#39;MISO&#39;,&#39;SpatialGlue&#39;],cluster_types=[&#39;mclust&#39;],add_key=&#39;consensus&#39;)
+sc.pl.spatial(adata,color=&#39;consensus&#39;,basis=&#39;aligned_spatial&#39;,spot_size=25)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+************ running SpatialGlue ***************
+processing protein
+processing rna
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+100%|██████████| 600/600 [00:57&lt;00:00, 10.45it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Model training finished!
+
+************ running MISO ***************
+CUDA is available. GPU: NVIDIA A100 80GB PCIe
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "558b929c432a469eb6aba693b737b80a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8958acaf3cda48979b76591da3d73dcb", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+************ running PRESENT ***************
+Loading data and parameters...
+Input data has been loaded
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Computing METIS partitioning...
+Done!
+
+Model training:  42%|████▏     | 42/100 [01:35&lt;02:11,  2.27s/it, NLL_loss=0.119, BNN_loss=0.5, MSE_loss=0.313, IOA_loss=0.0558, ES counter=20, ES patience=20]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Early stop the training process
+fitting ...
+
+  |======================================================================| 100%
+fitting ...
+
+  |======================================================================| 100%
+fitting ...
+
+  |======================================================================| 100%
+got consensus_matrix
+got consensus_labels
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_24_8.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_24_8.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cluster_save_dir=f&quot;{save_directory}/cluster_result_single_slice/&quot;
+if not os.path.exists(cluster_save_dir):
+    os.makedirs(cluster_save_dir,exist_ok=True)
+adata.write(f&#39;{cluster_save_dir}/4_ADT.h5ad&#39;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Jointly-identify-spatial-domains-across-the-two-translated-slices">
+<h2>Jointly identify spatial domains across the two translated slices<a class="headerlink" href="#Jointly-identify-spatial-domains-across-the-two-translated-slices" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>multiple_slices_dict={
+    &#39;2_RNA&#39;:{
+        &#39;rna&#39;:adata1.copy(),
+        &#39;protein&#39;:adata1_complemented.copy()
+    },
+    &#39;4_ADT&#39;:{
+        &#39;rna&#39;:adata2_complemented.copy(),
+        &#39;protein&#39;:adata2.copy()
+    }
+}
+
+reference_modality_dict={
+    &#39;2_RNA&#39;:&#39;rna&#39;,
+    &#39;4_ADT&#39;:&#39;protein&#39;
+}
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata_dict=spamoma.SpaMOMA_clustering_multiple_slices(multiple_slices_dict,reference_modality_dict,batch_key=&#39;batch&#39;,n_domains=6)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loading data and parameters...
+Input data has been loaded
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+First-stage trains basic model:  34%|███▍      | 34/100 [02:09&lt;04:11,  3.81s/it, NLL_loss=0.0642, BNN_loss=1.34, MSE_loss=0.385, IOA_loss=0.169, ES counter=20, ES patience=20]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Early stop the first-stage training process
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Second-stage trains BC model:  19%|█▉        | 19/100 [06:49&lt;29:05, 21.55s/it, IBA_loss=0.891, IBP_loss=0.104, DISC_loss=0.699, GEN_loss=-0.698, ES counter=10, ES patience=10]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Early stop the second-stage training process
+Succeed to find 6 clusters at resolution 0.094
+
+========== Processing batch: 2_RNA ==========
+
+========== Processing batch: 4_ADT ==========
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sc.pl.spatial(adata_dict[&#39;2_RNA&#39;],color=&#39;integrative_clusters&#39;,basis=&#39;aligned_spatial&#39;,spot_size=20)
+sc.pl.spatial(adata_dict[&#39;4_ADT&#39;],color=&#39;integrative_clusters&#39;,basis=&#39;aligned_spatial&#39;,spot_size=20)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_29_0.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_29_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_29_1.png" src="../_images/Tutorials_Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices_29_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cluster_save_dir=f&quot;{save_directory}/cluster_result_multiple_slices/&quot;
+if not os.path.exists(cluster_save_dir):
+    os.makedirs(cluster_save_dir,exist_ok=True)
+adata_dict[&#39;2_RNA&#39;].write(f&#39;{cluster_save_dir}/2_RNA.h5ad&#39;)
+adata_dict[&#39;4_ADT&#39;].write(f&#39;{cluster_save_dir}/4_ADT.h5ad&#39;)
+</pre></div>
+</div>
+</div>
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {"01032c7f0d87493898fe24a9037c3764": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0363d5ac26a34dd3b3ebe0aeee5712a9": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "0c73b384c2424d018b067bf5115cfdbf": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0f81f1a82e114ffb9719453732b85161": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_01032c7f0d87493898fe24a9037c3764", "placeholder": "\u200b", "style": "IPY_MODEL_ea18b4fae12748df9872214360ec8f96", "tabbable": null, "tooltip": null, "value": "Training\u2007network\u2007for\u2007modality\u20071:\u2007100%"}}, "24aa926719614a6e98c766db61c22ee1": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "26c1908d70da402dab5f991ef067e9f0": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_ae6d20a9c60f49fe9ac9be783b2c9890", "placeholder": "\u200b", "style": "IPY_MODEL_316d98f72a4f496d9084657cb60bed5e", "tabbable": null, "tooltip": null, "value": "\u20071000/1000\u2007[00:47&lt;00:00,\u200716.45it/s]"}}, "2f1c10ea0dc34cd98eaef994463868f1": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "2f7f5cb2711a40e3ac13c6425fa9c9ad": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_c777a48f04bb4cc39e53b79c214336b5", "placeholder": "\u200b", "style": "IPY_MODEL_3dffc81b62af4ee2abbad9bf6898b518", "tabbable": null, "tooltip": null, "value": "Training\u2007network\u2007for\u2007modality\u20072:\u2007100%"}}, "2f81e6840d0242d9aa15ebddd89e1d0b": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "316d98f72a4f496d9084657cb60bed5e": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "3c260f982473413d8915ec6c4783b397": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "3dffc81b62af4ee2abbad9bf6898b518": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "439cdfa1cc324ffca71b5b2769159b4f": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "448f154d9c134048b4d163ddb08a0c82": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_0f81f1a82e114ffb9719453732b85161", "IPY_MODEL_8af8fafa38324ee4b77a10acaa3e68d3", "IPY_MODEL_5bb01eb7379d4bc8878bac5d4224b2a5"], "layout": "IPY_MODEL_a2a1dc5f8a144c548dd31a324e012e51", "tabbable": null, "tooltip": null}}, "463fcc83268b423ba3029e957755c2ba": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "51efaef823824315a9719c4f16d7a5c3": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "533ff029bf6844c1b7b3df0e77cc1db1": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "558b929c432a469eb6aba693b737b80a": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_56deac988ec64a799cb5e58e0cca9451", "IPY_MODEL_5f6161d9dc0e4179b62e740e28ba8614", "IPY_MODEL_26c1908d70da402dab5f991ef067e9f0"], "layout": "IPY_MODEL_be109a6dc7c34b1b814d60a19038300c", "tabbable": null, "tooltip": null}}, "56deac988ec64a799cb5e58e0cca9451": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_2f1c10ea0dc34cd98eaef994463868f1", "placeholder": "\u200b", "style": "IPY_MODEL_7168f8cd41014114b4bdb13810c485f2", "tabbable": null, "tooltip": null, "value": "Training\u2007network\u2007for\u2007modality\u20071:\u2007100%"}}, "5bb01eb7379d4bc8878bac5d4224b2a5": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_904364a4e768484bbbd2d8b01bd1d0ae", "placeholder": "\u200b", "style": "IPY_MODEL_51efaef823824315a9719c4f16d7a5c3", "tabbable": null, "tooltip": null, "value": "\u20071000/1000\u2007[00:48&lt;00:00,\u200729.52it/s]"}}, "5f6161d9dc0e4179b62e740e28ba8614": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_93d7991b9665491a878962f37e5da82e", "max": 1000, "min": 0, "orientation": "horizontal", "style": "IPY_MODEL_533ff029bf6844c1b7b3df0e77cc1db1", "tabbable": null, "tooltip": null, "value": 1000}}, "714ec8dcd92040f5b263d004b539ad05": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "7168f8cd41014114b4bdb13810c485f2": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "7f1a495d1f6c4ff9bac0a2c5fd6fabbd": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_0c73b384c2424d018b067bf5115cfdbf", "max": 1000, "min": 0, "orientation": "horizontal", "style": "IPY_MODEL_24aa926719614a6e98c766db61c22ee1", "tabbable": null, "tooltip": null, "value": 1000}}, "8958acaf3cda48979b76591da3d73dcb": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_963587e9444745ca94bbf46809e53593", "IPY_MODEL_8fbf8a83e00f4d2588a202479f48f0b4", "IPY_MODEL_a2de9a17b7714ba7b5b88bb506fa57a0"], "layout": "IPY_MODEL_2f81e6840d0242d9aa15ebddd89e1d0b", "tabbable": null, "tooltip": null}}, "8af8fafa38324ee4b77a10acaa3e68d3": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_aeb7d6e0d7304170b3899da9b83276e1", "max": 1000, "min": 0, "orientation": "horizontal", "style": "IPY_MODEL_b2c6fd6313f2409899927794e4ed2765", "tabbable": null, "tooltip": null, "value": 1000}}, "8fbf8a83e00f4d2588a202479f48f0b4": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_aa0d92dcd96c4a40b2f245ca7a31b1db", "max": 1000, "min": 0, "orientation": "horizontal", "style": "IPY_MODEL_463fcc83268b423ba3029e957755c2ba", "tabbable": null, "tooltip": null, "value": 1000}}, "904364a4e768484bbbd2d8b01bd1d0ae": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "93d7991b9665491a878962f37e5da82e": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "9451435448d945e39987c90e217833ab": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_cf35c50ade2c40779bcc64800a1f4524", "placeholder": "\u200b", "style": "IPY_MODEL_3c260f982473413d8915ec6c4783b397", "tabbable": null, "tooltip": null, "value": "\u20071000/1000\u2007[00:43&lt;00:00,\u200722.87it/s]"}}, "963587e9444745ca94bbf46809e53593": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_714ec8dcd92040f5b263d004b539ad05", "placeholder": "\u200b", "style": "IPY_MODEL_0363d5ac26a34dd3b3ebe0aeee5712a9", "tabbable": null, "tooltip": null, "value": "Training\u2007network\u2007for\u2007modality\u20072:\u2007100%"}}, "a2a1dc5f8a144c548dd31a324e012e51": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "a2de9a17b7714ba7b5b88bb506fa57a0": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_f795a4f208f9485e86e7acc11ec9854b", "placeholder": "\u200b", "style": "IPY_MODEL_439cdfa1cc324ffca71b5b2769159b4f", "tabbable": null, "tooltip": null, "value": "\u20071000/1000\u2007[00:47&lt;00:00,\u200716.72it/s]"}}, "aa0d92dcd96c4a40b2f245ca7a31b1db": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "ad7c3c2456d549b9873bad3e04e7bab1": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "ae6d20a9c60f49fe9ac9be783b2c9890": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "aeb7d6e0d7304170b3899da9b83276e1": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "b2c6fd6313f2409899927794e4ed2765": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "be109a6dc7c34b1b814d60a19038300c": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c777a48f04bb4cc39e53b79c214336b5": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "cf35c50ade2c40779bcc64800a1f4524": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "ea18b4fae12748df9872214360ec8f96": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "f3990136c7524ef480fe6fc11928437f": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_2f7f5cb2711a40e3ac13c6425fa9c9ad", "IPY_MODEL_7f1a495d1f6c4ff9bac0a2c5fd6fabbd", "IPY_MODEL_9451435448d945e39987c90e217833ab"], "layout": "IPY_MODEL_ad7c3c2456d549b9873bad3e04e7bab1", "tabbable": null, "tooltip": null}}, "f795a4f208f9485e86e7acc11ec9854b": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}}, "version_major": 2, "version_minor": 0}
+</script></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Tutorial3_Aligning_spatial_transcriptomics_data_and_spatial_epigenomics_data_of_mouse_coronal_brain_slices.html" class="btn btn-neutral float-left" title="Tutorial 3: Aligning spatial transcriptomics data and spatial epigenomics data of mouse coronal brain slices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Tutorial5_Aligning_spatial_transcriptomics_data_to_spatial_metabolomics_data_of_mouse_brain_slices.html" class="btn btn-neutral float-right" title="Tutorial 5: Aligning spatial transcriptomics data to spatial metabolomics data of mouse brain slices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, ZhangJianxing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

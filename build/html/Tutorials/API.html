@@ -1,0 +1,700 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API &mdash; SpaMOMA  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial 1: Aligning eight spatial transcriptomics slices of mouse hippocampus" href="Tutorial1_Aligning_eight_spatial_transcriptomics_slices_of_mouse_hippocampus.html" />
+    <link rel="prev" title="Installation" href="Installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpaMOMA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Class:-SpaMOMA">Class: <code class="docutils literal notranslate"><span class="pre">SpaMOMA</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#__init__(self,-save_dir)"><code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">save_dir)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Description">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#add_slice(self,-sample_id,-raw_data_path,-feature)"><code class="docutils literal notranslate"><span class="pre">add_slice(self,</span> <span class="pre">sample_id,</span> <span class="pre">raw_data_path,</span> <span class="pre">feature)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-1">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-1">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#set_reference(self,-sample_id)"><code class="docutils literal notranslate"><span class="pre">set_reference(self,</span> <span class="pre">sample_id)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-2">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-2">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#preprocess_input_slices(self,-params_dict={})"><code class="docutils literal notranslate"><span class="pre">preprocess_input_slices(self,</span> <span class="pre">params_dict={})</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-3">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-3">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#generate_imgs(self,-params_dict={})"><code class="docutils literal notranslate"><span class="pre">generate_imgs(self,</span> <span class="pre">params_dict={})</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-4">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-4">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#train(...)"><code class="docutils literal notranslate"><span class="pre">train(...)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-5">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-5">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#align_slices(self,-coarse_weights_path=None,-fine_weights_path=None,-visualize_correspondences=False)"><code class="docutils literal notranslate"><span class="pre">align_slices(self,</span> <span class="pre">coarse_weights_path=None,</span> <span class="pre">fine_weights_path=None,</span> <span class="pre">visualize_correspondences=False)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-6">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-6">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#read_aligned_data(self,-sample_id)"><code class="docutils literal notranslate"><span class="pre">read_aligned_data(self,</span> <span class="pre">sample_id)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-7">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Returns">Returns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-7">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#visualize_aligned_slices(...)"><code class="docutils literal notranslate"><span class="pre">visualize_aligned_slices(...)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-8">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-8">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#SpaMOMA_translate(self,-adata_target,-adata_src,-save_path,-k_neighbors=5,-overlap_distance_threshold=20)"><code class="docutils literal notranslate"><span class="pre">SpaMOMA_translate(self,</span> <span class="pre">adata_target,</span> <span class="pre">adata_src,</span> <span class="pre">save_path,</span> <span class="pre">k_neighbors=5,</span> <span class="pre">overlap_distance_threshold=20)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-9">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-9">Description</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#1️⃣-Overlapping-Regions">1️⃣ Overlapping Regions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#2️⃣-Non-Overlapping-Regions">2️⃣ Non-Overlapping Regions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#SpaMOMA_clustering(...)"><code class="docutils literal notranslate"><span class="pre">SpaMOMA_clustering(...)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-10">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-10">Description</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Step-1:-Multimodal-Embedding">Step 1: Multimodal Embedding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Step-2:-Clustering-per-Embedding">Step 2: Clustering per Embedding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Step-3:-Consensus-Voting">Step 3: Consensus Voting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#SpaMOMA_clustering_multiple_slices(...)"><code class="docutils literal notranslate"><span class="pre">SpaMOMA_clustering_multiple_slices(...)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-11">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-11">Description</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overlapping-regions-1">1️⃣ Overlapping Regions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#non-overlapping-regions-1">2️⃣ Non-Overlapping Regions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#3️⃣-Optional-Spatial-Smoothing">3️⃣ Optional Spatial Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#output-1">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#SpaMOMA_enhance_resolution(self,-img_path,-adata,-pseudo_spot_size=10,-weight_decay=4,-n_neighbors=4)"><code class="docutils literal notranslate"><span class="pre">SpaMOMA_enhance_resolution(self,</span> <span class="pre">img_path,</span> <span class="pre">adata,</span> <span class="pre">pseudo_spot_size=10,</span> <span class="pre">weight_decay=4,</span> <span class="pre">n_neighbors=4)</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-12">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description-12">Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#returns-1">Returns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial1_Aligning_eight_spatial_transcriptomics_slices_of_mouse_hippocampus.html">Tutorial 1: Aligning eight spatial transcriptomics slices of mouse hippocampus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial2_Aligning_spatial_transcriptomics_slices_of_mouse_olfactory_bulb.html">Tutorial 2: Aligning spatial transcriptomics slices of mouse olfactory bulb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial3_Aligning_spatial_transcriptomics_data_and_spatial_epigenomics_data_of_mouse_coronal_brain_slices.html">Tutorial 3: Aligning spatial transcriptomics data and spatial epigenomics data of mouse coronal brain slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial4_Aligning_spatial_transcriptomics_data_and_spatial_proteomics_data_of_mouse_thymus_slices.html">Tutorial 4: Aligning spatial transcriptomics data and spatial proteomics data of mouse thymus slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial5_Aligning_spatial_transcriptomics_data_to_spatial_metabolomics_data_of_mouse_brain_slices.html">Tutorial 5: Aligning spatial transcriptomics data to spatial metabolomics data of mouse brain slices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial6_Aligning_spatial_transcriptomics_data_to_H%26E_image_of_human_breast_cancer_data_from_Xenium.html">Tutorial 6: Aligning spatial transcriptomics data to H&amp;E image of human breast cancer data from Xenium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial7_Aligning_spatial_transcriptomics_spatial_epigenomics_data_and_H%26E_image_of_mouse_embryonic_brain_data_from_MISAR-seq.html">Tutorial 7: Aligning spatial transcriptomics, spatial epigenomics data and H&amp;E image of mouse embryonic brain data from MISAR-seq</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpaMOMA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Tutorials/API.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="API">
+<h1>API<a class="headerlink" href="#API" title="Link to this heading"></a></h1>
+<section id="Class:-SpaMOMA">
+<h2>Class: <code class="docutils literal notranslate"><span class="pre">SpaMOMA</span></code><a class="headerlink" href="#Class:-SpaMOMA" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">SpaMOMA</span></code> provides an end-to-end framework for spatial multi-omics slice alignment, translation, clustering, and resolution enhancement.</div>
+<div class="line">It supports omics data (RNA, ATAC, protein, metabolite) as well as image inputs.</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="__init__(self,-save_dir)">
+<h2><code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">save_dir)</span></code><a class="headerlink" href="#__init__(self,-save_dir)" title="Link to this heading"></a></h2>
+<p>Initialize a SpaMOMA project.</p>
+<section id="Parameters">
+<h3>Parameters<a class="headerlink" href="#Parameters" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>save_dir</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>)
+Directory where all intermediate files, trained models, logs, and alignment outputs will be stored.</p></li>
+</ul>
+</section>
+<section id="Description">
+<h3>Description<a class="headerlink" href="#Description" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Creates the project directory if it does not exist.</p></li>
+<li><p>Initializes:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">input_slice_dict</span></code>: dictionary storing slice metadata.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reference_sample_id</span></code>: default reference slice.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coarse_epochs</span></code> / <code class="docutils literal notranslate"><span class="pre">fine_epochs</span></code>: training configuration placeholders.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="add_slice(self,-sample_id,-raw_data_path,-feature)">
+<h2><code class="docutils literal notranslate"><span class="pre">add_slice(self,</span> <span class="pre">sample_id,</span> <span class="pre">raw_data_path,</span> <span class="pre">feature)</span></code><a class="headerlink" href="#add_slice(self,-sample_id,-raw_data_path,-feature)" title="Link to this heading"></a></h2>
+<p>Register a slice into the SpaMOMA workflow.</p>
+<section id="parameters-1">
+<span id="id1"></span><h3>Parameters<a class="headerlink" href="#parameters-1" title="Link to this heading"></a></h3>
+<ul>
+<li><div class="line-block">
+<div class="line"><strong>sample_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>)</div>
+<div class="line">Unique identifier for the slice.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>raw_data_path</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>)</div>
+<div class="line">Path to the raw input file:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.h5ad</span></code> for omics data</p></li>
+<li><p>image file for <code class="docutils literal notranslate"><span class="pre">img</span></code> feature</p></li>
+</ul>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>feature</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>)</div>
+<div class="line">Type of input data. Must be one of:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'rna'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'gene_activity_score'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'peak'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'protein'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'metabolite'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'img'</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="description-1">
+<span id="id2"></span><h3>Description<a class="headerlink" href="#description-1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Adds slice metadata to <code class="docutils literal notranslate"><span class="pre">input_slice_dict</span></code>.</p></li>
+<li><p>The first added slice is automatically set as the reference slice.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="set_reference(self,-sample_id)">
+<h2><code class="docutils literal notranslate"><span class="pre">set_reference(self,</span> <span class="pre">sample_id)</span></code><a class="headerlink" href="#set_reference(self,-sample_id)" title="Link to this heading"></a></h2>
+<p>Set the reference slice for alignment.</p>
+<section id="parameters-2">
+<span id="id3"></span><h3>Parameters<a class="headerlink" href="#parameters-2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>sample_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>)
+Identifier of the slice to use as reference.</p></li>
+</ul>
+</section>
+<section id="description-2">
+<span id="id4"></span><h3>Description<a class="headerlink" href="#description-2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Defines the coordinate system to which all other slices will be aligned.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="preprocess_input_slices(self,-params_dict={})">
+<h2><code class="docutils literal notranslate"><span class="pre">preprocess_input_slices(self,</span> <span class="pre">params_dict={})</span></code><a class="headerlink" href="#preprocess_input_slices(self,-params_dict={})" title="Link to this heading"></a></h2>
+<p>Preprocess all registered slices.</p>
+<section id="parameters-3">
+<span id="id5"></span><h3>Parameters<a class="headerlink" href="#parameters-3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>params_dict</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>, optional)
+Dictionary specifying per-slice preprocessing parameters.</p></li>
+</ul>
+<p>For omics slices:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">svf_num</span></code> – Number of spatially variable features.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hvf_num</span></code> – Number of highly variable features.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pseudo_color_key</span></code> – Key for storing pseudo-color embedding.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graph_mode</span></code> – <code class="docutils literal notranslate"><span class="pre">'KNN'</span></code> or <code class="docutils literal notranslate"><span class="pre">'Radius'</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rad_cutoff</span></code> – Radius threshold (if using Radius graph).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k_cutoff</span></code> – KNN graph neighbor number (if using KNN graph).</p></li>
+</ul>
+<p>For image slices:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">downsample</span></code> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to apply color quantization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> – Number of color clusters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gaussian_kernel</span></code> – Gaussian smoothing kernel.</p></li>
+</ul>
+</section>
+<section id="description-3">
+<span id="id6"></span><h3>Description<a class="headerlink" href="#description-3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Omics slices:</p>
+<ul>
+<li><p>Feature selection (HVG + SVG)</p></li>
+<li><p>Normalization &amp; log transformation</p></li>
+<li><p>STAGATE embedding</p></li>
+<li><p>PCA to 3D pseudo-color space</p></li>
+<li><p>Saves processed <code class="docutils literal notranslate"><span class="pre">.h5ad</span></code></p></li>
+</ul>
+</li>
+<li><p>Image slices:</p>
+<ul>
+<li><p>Optional color quantization</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="generate_imgs(self,-params_dict={})">
+<h2><code class="docutils literal notranslate"><span class="pre">generate_imgs(self,</span> <span class="pre">params_dict={})</span></code><a class="headerlink" href="#generate_imgs(self,-params_dict={})" title="Link to this heading"></a></h2>
+<p>Generate Spatial Pattern Images (SPI).</p>
+<section id="parameters-4">
+<span id="id7"></span><h3>Parameters<a class="headerlink" href="#parameters-4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>params_dict</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>, optional)
+Per-slice visualization parameters:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_distance_ratio</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interpolation_method</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gaussian_sigma</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="description-4">
+<span id="id8"></span><h3>Description<a class="headerlink" href="#description-4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>For omics slices:</p>
+<ul>
+<li><p>Converts pseudo-color embeddings into RGB spatial images.</p></li>
+</ul>
+</li>
+<li><p>For image slices:</p>
+<ul>
+<li><p>Saves original or downsampled image.</p></li>
+</ul>
+</li>
+<li><p>Stores SPI path for downstream training.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="train(...)">
+<h2><code class="docutils literal notranslate"><span class="pre">train(...)</span></code><a class="headerlink" href="#train(...)" title="Link to this heading"></a></h2>
+<p>Train coarse and fine alignment models.</p>
+<section id="parameters-5">
+<span id="id9"></span><h3>Parameters<a class="headerlink" href="#parameters-5" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>coarse_epochs</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – Coarse training epochs.</p></li>
+<li><p><strong>fine_epochs</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – Fine training epochs.</p></li>
+<li><p><strong>batch_size</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
+<li><p><strong>parallel_mode</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Run coarse and fine training in parallel.</p></li>
+<li><p><strong>coarse_checkpoint_save_step</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional)</p></li>
+<li><p><strong>fine_checkpoint_save_step</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional)</p></li>
+<li><p><strong>coarse_gpu</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – GPU ID for coarse stage.</p></li>
+<li><p><strong>fine_gpu</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – GPU ID for fine stage.</p></li>
+</ul>
+</section>
+<section id="description-5">
+<span id="id10"></span><h3>Description<a class="headerlink" href="#description-5" title="Link to this heading"></a></h3>
+<p>Two-stage training:</p>
+<ol class="arabic simple">
+<li><p><strong>Coarse alignment</strong></p>
+<ul class="simple">
+<li><p>Multi-angle rotation augmentation</p></li>
+<li><p>Progressive angle expansion</p></li>
+</ul>
+</li>
+<li><p><strong>Fine alignment</strong></p>
+<ul class="simple">
+<li><p>Single-angle refinement</p></li>
+</ul>
+</li>
+</ol>
+<ul class="simple">
+<li><p>Launches subprocesses for adaptation.</p></li>
+<li><p>Saves logs to:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">coarse_adapt.log</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fine_adapt.log</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="align_slices(self,-coarse_weights_path=None,-fine_weights_path=None,-visualize_correspondences=False)">
+<h2><code class="docutils literal notranslate"><span class="pre">align_slices(self,</span> <span class="pre">coarse_weights_path=None,</span> <span class="pre">fine_weights_path=None,</span> <span class="pre">visualize_correspondences=False)</span></code><a class="headerlink" href="#align_slices(self,-coarse_weights_path=None,-fine_weights_path=None,-visualize_correspondences=False)" title="Link to this heading"></a></h2>
+<p>Perform slice alignment.</p>
+<section id="parameters-6">
+<span id="id11"></span><h3>Parameters<a class="headerlink" href="#parameters-6" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>coarse_weights_path</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) - Path to pretrained weights for the coarse matching network (RoMa). If None, it will automaticlly scan weigths file under the weights directory.</p></li>
+<li><p><strong>fine_weights_path</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -Path to pretrained weights for the fine matching network.</p></li>
+<li><p><strong>visualize_correspondences</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) -Whether to visualize coarse and fine matching correspondences during alignment.</p></li>
+</ul>
+</section>
+<section id="description-6">
+<span id="id12"></span><h3>Description<a class="headerlink" href="#description-6" title="Link to this heading"></a></h3>
+<p>Pipeline:</p>
+<ol class="arabic simple">
+<li><p>Load reference &amp; source SPIs</p></li>
+<li><p>Coarse matching (RoMa)</p></li>
+<li><p>Estimate affine transformation</p></li>
+<li><p>Fine matching</p></li>
+<li><p>Compose transformations</p></li>
+<li><p>Warp images or spatial coordinates</p></li>
+</ol>
+<p>Outputs saved in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">save_dir/alignment_output/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.png</span></code> for images</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.h5ad</span></code> for omics</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="read_aligned_data(self,-sample_id)">
+<h2><code class="docutils literal notranslate"><span class="pre">read_aligned_data(self,</span> <span class="pre">sample_id)</span></code><a class="headerlink" href="#read_aligned_data(self,-sample_id)" title="Link to this heading"></a></h2>
+<p>Load aligned result.</p>
+<section id="parameters-7">
+<span id="id13"></span><h3>Parameters<a class="headerlink" href="#parameters-7" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>sample_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Identifier of the aligned sample to load. Must match the previous input.</p></li>
+</ul>
+</section>
+<section id="Returns">
+<h3>Returns<a class="headerlink" href="#Returns" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> (if image)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AnnData</span></code> (if omics)</p></li>
+</ul>
+</section>
+<section id="description-7">
+<span id="id14"></span><h3>Description<a class="headerlink" href="#description-7" title="Link to this heading"></a></h3>
+<p>Reads aligned data from <code class="docutils literal notranslate"><span class="pre">alignment_output</span></code>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="visualize_aligned_slices(...)">
+<h2><code class="docutils literal notranslate"><span class="pre">visualize_aligned_slices(...)</span></code><a class="headerlink" href="#visualize_aligned_slices(...)" title="Link to this heading"></a></h2>
+<p>Visualize overlaid aligned slices.</p>
+<section id="parameters-8">
+<span id="id15"></span><h3>Parameters<a class="headerlink" href="#parameters-8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>figsize</strong> (<code class="docutils literal notranslate"><span class="pre">tuple</span></code>) - Size of the matplotlib figure.</p></li>
+<li><p><strong>point_size</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Marker size when plotting spatial spots.</p></li>
+<li><p><strong>alpha_adata</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) - Transparency of omics spot visualization.</p></li>
+<li><p><strong>alpha_img</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) - Transparency of background image overlay.</p></li>
+<li><p><strong>color_map</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>, optional) - Dictionary mapping domain labels or clusters to colors. If None, default color palette is used.</p></li>
+<li><p><strong>save_fig</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) - Whether to save the visualization figure.</p></li>
+<li><p><strong>dpi</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Resolution (dots per inch) when saving the figure.</p></li>
+</ul>
+</section>
+<section id="description-8">
+<span id="id16"></span><h3>Description<a class="headerlink" href="#description-8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Overlays aligned slices on reference.</p></li>
+<li><p>Supports both images and spatial omics.</p></li>
+<li><p>Saves figure optionally.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="SpaMOMA_translate(self,-adata_target,-adata_src,-save_path,-k_neighbors=5,-overlap_distance_threshold=20)">
+<h2><code class="docutils literal notranslate"><span class="pre">SpaMOMA_translate(self,</span> <span class="pre">adata_target,</span> <span class="pre">adata_src,</span> <span class="pre">save_path,</span> <span class="pre">k_neighbors=5,</span> <span class="pre">overlap_distance_threshold=20)</span></code><a class="headerlink" href="#SpaMOMA_translate(self,-adata_target,-adata_src,-save_path,-k_neighbors=5,-overlap_distance_threshold=20)" title="Link to this heading"></a></h2>
+<p>Perform cross-slice modality translation.</p>
+<section id="parameters-9">
+<span id="id17"></span><h3>Parameters<a class="headerlink" href="#parameters-9" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>adata_target</strong> (<code class="docutils literal notranslate"><span class="pre">AnnData</span></code>) - Target slice to receive transferred features.</p></li>
+<li><p><strong>adata_src</strong> (<code class="docutils literal notranslate"><span class="pre">AnnData</span></code>) - Source slice providing features for translation.</p></li>
+<li><p><strong>save_path</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Path to save translated AnnData object.</p></li>
+<li><p><strong>k_neighbors</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Number of nearest spatial neighbors used for feature aggregation.</p></li>
+<li><p><strong>overlap_distance_threshold</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) - Maximum spatial distance to consider two spots overlapping.</p></li>
+</ul>
+</section>
+<section id="description-9">
+<span id="id18"></span><h3>Description<a class="headerlink" href="#description-9" title="Link to this heading"></a></h3>
+<p>SpaMOMA performs translation differently for <strong>overlapping</strong> and <strong>non-overlapping</strong> regions.</p>
+<section id="1️⃣-Overlapping-Regions">
+<h4>1️⃣ Overlapping Regions<a class="headerlink" href="#1️⃣-Overlapping-Regions" title="Link to this heading"></a></h4>
+<p>For spatially overlapping spots between the two slices:</p>
+<ul class="simple">
+<li><p>Direct cross-slice feature aggregation is performed.</p></li>
+<li><p>For each target spot, features from spatially matched source neighbors are aggregated.</p></li>
+<li><p>Aggregation is based on spatial proximity and nearest-neighbor search.</p></li>
+</ul>
+</section>
+<section id="2️⃣-Non-Overlapping-Regions">
+<h4>2️⃣ Non-Overlapping Regions<a class="headerlink" href="#2️⃣-Non-Overlapping-Regions" title="Link to this heading"></a></h4>
+<p>For target spots outside the overlapping region:</p>
+<ul class="simple">
+<li><p>Direct spatial correspondence is unavailable.</p></li>
+<li><p>SpaMOMA computes feature similarity between:</p>
+<ul>
+<li><p>Non-overlapping target spots</p></li>
+<li><p>Overlapping target spots (which already have translated source features)</p></li>
+</ul>
+</li>
+<li><p>The source features of overlapping spots are then propagated to non-overlapping spots based on similarity in the target modality feature space.</p></li>
+</ul>
+<p>In other words:</p>
+<blockquote>
+<div><p>Non-overlapping regions are predicted using similarity-weighted propagation from overlapping regions.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="SpaMOMA_clustering(...)">
+<h2><code class="docutils literal notranslate"><span class="pre">SpaMOMA_clustering(...)</span></code><a class="headerlink" href="#SpaMOMA_clustering(...)" title="Link to this heading"></a></h2>
+<p>Perform integrative clustering for paired modalities.</p>
+<section id="parameters-10">
+<span id="id19"></span><h3>Parameters<a class="headerlink" href="#parameters-10" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>adata1</strong>, <strong>adata2</strong> (<code class="docutils literal notranslate"><span class="pre">AnnData</span></code>) - Two paired modalities (e.g., RNA &amp; ATAC).</p></li>
+<li><p><strong>modality1</strong>, <strong>modality2</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Names of modalities, used for embedding routing.</p></li>
+<li><p><strong>data_type</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Specifies dataset type (e.g., “Spatial-epigenome-transcriptome”), determines preprocessing and embedding strategy.</p></li>
+<li><p><strong>n_domains</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Number of clusters/domains to identify.</p></li>
+<li><p><strong>method_list</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) - Multimodal embedding methods to compute. Supported:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'SpatialGlue'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'MISO'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'PRESENT'</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>cluster_types</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) - Clustering algorithms applied to embeddings. Supported:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'leiden'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'louvain'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'mclust'</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>add_key</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Key name under adata.obs where clustering results will be stored.</p></li>
+</ul>
+</section>
+<section id="description-10">
+<span id="id20"></span><h3>Description<a class="headerlink" href="#description-10" title="Link to this heading"></a></h3>
+<p>SpaMOMA performs multi-method integrative clustering using a consensus strategy.</p>
+<section id="Step-1:-Multimodal-Embedding">
+<h4>Step 1: Multimodal Embedding<a class="headerlink" href="#Step-1:-Multimodal-Embedding" title="Link to this heading"></a></h4>
+<p>For each method in <code class="docutils literal notranslate"><span class="pre">method_list</span></code>, a multimodal embedding is computed independently.</p>
+</section>
+<section id="Step-2:-Clustering-per-Embedding">
+<h4>Step 2: Clustering per Embedding<a class="headerlink" href="#Step-2:-Clustering-per-Embedding" title="Link to this heading"></a></h4>
+<p>For each generated embedding, clustering is performed using all algorithms specified in <code class="docutils literal notranslate"><span class="pre">cluster_types</span></code>.</p>
+<p>Therefore, the total number of clustering results is:</p>
+<p>[ <span class="math">\text{Total clusterings}</span> = |:nbsphinx-math:<cite>text{method_list}</cite>| <span class="math">\times `\|:nbsphinx-math:</span>text{cluster_types}`| ]</p>
+<p>Each embedding × clustering algorithm combination produces one clustering result.</p>
+</section>
+<section id="Step-3:-Consensus-Voting">
+<h4>Step 3: Consensus Voting<a class="headerlink" href="#Step-3:-Consensus-Voting" title="Link to this heading"></a></h4>
+<p>All clustering results are integrated using a consensus voting strategy:</p>
+<ul class="simple">
+<li><p>Each spot receives multiple cluster labels.</p></li>
+<li><p>A voting mechanism aggregates these labels.</p></li>
+<li><p>The final domain assignment is determined based on agreement across methods.</p></li>
+</ul>
+</section>
+</section>
+<section id="Output">
+<h3>Output<a class="headerlink" href="#Output" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Returns clustered <code class="docutils literal notranslate"><span class="pre">AnnData</span></code></p></li>
+<li><p>Stores final consensus clustering under <code class="docutils literal notranslate"><span class="pre">adata.obs[add_key]</span></code></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="SpaMOMA_clustering_multiple_slices(...)">
+<h2><code class="docutils literal notranslate"><span class="pre">SpaMOMA_clustering_multiple_slices(...)</span></code><a class="headerlink" href="#SpaMOMA_clustering_multiple_slices(...)" title="Link to this heading"></a></h2>
+<p>Joint clustering across two aligned slices.</p>
+<section id="parameters-11">
+<span id="id21"></span><h3>Parameters<a class="headerlink" href="#parameters-11" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>multiple_slices_dict</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>) - Dictionary of slice_name → adata.</p></li>
+<li><p><strong>reference_modality_dict</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>) - Specifies which modality serves as reference per slice for label prediction of non-overlap region.</p></li>
+<li><p><strong>batch_key</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Metadata key identifying slice origin.</p></li>
+<li><p><strong>n_domains</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Number of shared domains across slices.</p></li>
+<li><p><strong>spatial_key</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Key storing spatial coordinates.</p></li>
+<li><p><strong>add_key</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Key for storing joint clustering results.</p></li>
+<li><p><strong>overlap_distance_threshold</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) - Spatial threshold for defining overlapping regions.</p></li>
+<li><p><strong>smooth</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) - Whether to apply spatial smoothing.</p></li>
+<li><p><strong>k_smooth</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Number of neighbors used for smoothing.</p></li>
+<li><p><strong>smooth_outlier_threshold</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) - Threshold for identifying outlier spots during smoothing.</p></li>
+</ul>
+</section>
+<section id="description-11">
+<span id="id22"></span><h3>Description<a class="headerlink" href="#description-11" title="Link to this heading"></a></h3>
+<p>SpaMOMA performs joint clustering using different strategies for overlapping and non-overlapping regions.</p>
+<section id="overlapping-regions-1">
+<span id="id23"></span><h4>1️⃣ Overlapping Regions<a class="headerlink" href="#overlapping-regions-1" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Spatially overlapping spots between slices are identified using <code class="docutils literal notranslate"><span class="pre">overlap_distance_threshold</span></code>.</p></li>
+<li><p>Only overlapping regions are used to compute a joint multimodal embedding (via PRESENT).</p></li>
+<li><p>Clustering is performed in this shared embedding space to identify cross-slice shared domains.</p></li>
+</ul>
+<p>This ensures domain consistency in spatially aligned regions.</p>
+</section>
+<section id="non-overlapping-regions-1">
+<span id="id24"></span><h4>2️⃣ Non-Overlapping Regions<a class="headerlink" href="#non-overlapping-regions-1" title="Link to this heading"></a></h4>
+<p>For spots outside the overlapping region:</p>
+<ul class="simple">
+<li><p>Joint embedding is not directly available.</p></li>
+<li><p>For each slice, non-overlapping spots are compared to overlapping spots <strong>within the same slice</strong> using the specified <code class="docutils literal notranslate"><span class="pre">reference_modality_dict</span></code>.</p></li>
+<li><p>Similarity is computed in the reference modality feature space.</p></li>
+<li><p>Domain labels from overlapping spots are propagated to non-overlapping spots based on similarity.</p></li>
+</ul>
+<p>In other words:</p>
+<blockquote>
+<div><p>Non-overlapping labels are predicted via similarity-based label transfer from overlapping regions within each slice.</p>
+</div></blockquote>
+</section>
+<section id="3️⃣-Optional-Spatial-Smoothing">
+<h4>3️⃣ Optional Spatial Smoothing<a class="headerlink" href="#3️⃣-Optional-Spatial-Smoothing" title="Link to this heading"></a></h4>
+<p>If <code class="docutils literal notranslate"><span class="pre">smooth=True</span></code>:</p>
+<ul class="simple">
+<li><p>A k-nearest neighbor spatial graph is constructed.</p></li>
+<li><p>Local label refinement is performed.</p></li>
+<li><p>Outliers are corrected using <code class="docutils literal notranslate"><span class="pre">smooth_outlier_threshold</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="output-1">
+<span id="id25"></span><h3>Output<a class="headerlink" href="#output-1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Returns updated <code class="docutils literal notranslate"><span class="pre">AnnData</span></code> objects</p></li>
+<li><p>Stores joint clustering results under <code class="docutils literal notranslate"><span class="pre">adata.obs[add_key]</span></code></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="SpaMOMA_enhance_resolution(self,-img_path,-adata,-pseudo_spot_size=10,-weight_decay=4,-n_neighbors=4)">
+<h2><code class="docutils literal notranslate"><span class="pre">SpaMOMA_enhance_resolution(self,</span> <span class="pre">img_path,</span> <span class="pre">adata,</span> <span class="pre">pseudo_spot_size=10,</span> <span class="pre">weight_decay=4,</span> <span class="pre">n_neighbors=4)</span></code><a class="headerlink" href="#SpaMOMA_enhance_resolution(self,-img_path,-adata,-pseudo_spot_size=10,-weight_decay=4,-n_neighbors=4)" title="Link to this heading"></a></h2>
+<p>Enhance spot resolution to pixel-level resolution.</p>
+<section id="parameters-12">
+<span id="id26"></span><h3>Parameters<a class="headerlink" href="#parameters-12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>img_path</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) - Path to high-resolution histology image.</p></li>
+<li><p><strong>adata</strong> (<code class="docutils literal notranslate"><span class="pre">AnnData</span></code>) - Original low-resolution spatial omics data.</p></li>
+<li><p><strong>pseudo_spot_size</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Diameter (in pixels) of generated pseudo-spots.</p></li>
+<li><p><strong>weight_decay</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) - Controls spatial influence decay when aggregating neighboring signals.</p></li>
+<li><p><strong>n_neighbors</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) - Number of neighboring spots used during enhancement.</p></li>
+</ul>
+</section>
+<section id="description-12">
+<span id="id27"></span><h3>Description<a class="headerlink" href="#description-12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Generates pseudo-spots.</p></li>
+<li><p>Uses spatial and image cues.</p></li>
+<li><p>Produces enhanced-resolution AnnData.</p></li>
+</ul>
+</section>
+<section id="returns-1">
+<span id="id28"></span><h3>Returns<a class="headerlink" href="#returns-1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Enhanced <code class="docutils literal notranslate"><span class="pre">AnnData</span></code></p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Tutorial1_Aligning_eight_spatial_transcriptomics_slices_of_mouse_hippocampus.html" class="btn btn-neutral float-right" title="Tutorial 1: Aligning eight spatial transcriptomics slices of mouse hippocampus" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, ZhangJianxing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
