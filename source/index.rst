@@ -16,3 +16,5 @@ SpaMOMA is good.
    :maxdepth: 2
    :caption: Contents:
 
+   output_HBC.ipynb
+
